@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>Hari — Portfolio</title>
+  <meta name="description" content="Hero prototype: a rotating portrait, oversized type and liquid-mercury distortion." />
+  <meta name="theme-color" content="#ffffff" />
+  <link rel="preload" as="fetch" type="image/webp" href="./frames/f000.webp" crossorigin />
+  <!-- First paint = the loader. Inline on purpose: nothing may paint before this, and no waiting for the CSS bundle. -->
+  <script>document.documentElement.classList.add('is-loading');</script>
+  <style>
+    html.is-loading { overflow: hidden; background: #0a0a0a; }
+    .preloader { position: fixed; top: 0; left: 0; width: 100%; height: 100vh; height: 100svh; z-index: 1000; background: #0a0a0a; color: #fff; overflow: hidden; }
+    .preloader[hidden] { display: none; }
+    .preloader__canvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
+    .preloader [data-preloader-label] { opacity: 0; transform: translateY(10px); }
+  </style>
+  <noscript><style>.preloader { display: none !important; } html.is-loading { overflow: auto; }</style></noscript>
+  <script type="module" src="/src/main.js"></script>
+</head>
+<body>
+  <div class="preloader" id="preloader" role="status" aria-live="polite" aria-busy="true">
+    <span class="sr-only">Loading portfolio</span>
+    <canvas class="preloader__canvas" data-preloader-canvas aria-hidden="true"></canvas>
+    <p class="preloader__label preloader__label--brand" data-preloader-label aria-hidden="true">Hari</p>
+    <p class="preloader__label preloader__label--caption" data-preloader-label aria-hidden="true">Thumbnail design<br />for YouTube creators</p>
+    <p class="preloader__label preloader__label--status" data-preloader-label aria-hidden="true">Loading</p>
+  </div>
+
+  <div class="hero-track" id="hero-track">
+  <main class="hero" id="hero" data-state="loading">
+    <header class="nav">
+      <a class="nav__brand" href="#top" aria-label="Hari, home">Hari</a>
+      <nav class="nav__links" aria-label="Primary">
+        <a href="#work">Work</a>
+        <a href="#about">About</a>
+        <a href="#testimonials">Testimonials</a>
+        <a href="#contact">Contact</a>
+      </nav>
+    </header>
+
+    <!-- Real heading for assistive tech / no-WebGL fallback. The visible type is drawn on the WebGL canvas. -->
+    <h1 class="hero__title" id="title">Portfolio</h1>
+
+    <canvas class="layer layer--type" id="type-canvas" aria-hidden="true"></canvas>
+    <canvas class="layer layer--portrait" id="portrait-canvas" aria-hidden="true"></canvas>
+
+    <p class="caption">Thumbnail design<br />for YouTube creators</p>
+    <p class="cue" id="cue">Scroll to turn</p>
+  </main>
+  </div>
+
+  <div id="site"></div>
+</body>
+</html>

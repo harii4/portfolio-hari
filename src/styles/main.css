@@ -1,0 +1,122 @@
+:root {
+  --paper: #ffffff;
+  --ink: #111111;
+  --pad: clamp(18px, 2.6vw, 40px);
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+
+html { background: var(--paper); -webkit-text-size-adjust: 100%; }
+
+body {
+  margin: 0;
+  background: var(--paper);
+  color: var(--ink);
+  font-family: 'Inter Tight Variable', 'Inter Tight', system-ui, -apple-system, 'Helvetica Neue', Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  overflow-x: hidden;
+}
+
+a { color: inherit; text-decoration: none; }
+
+/* ───────────────────────── hero shell ───────────────────────── */
+.hero {
+  position: relative;
+  width: 100%;
+  height: 100vh;
+  height: 100svh;
+  overflow: hidden;
+  background: var(--paper);
+  isolation: isolate;
+}
+
+.layer { position: absolute; display: block; pointer-events: none; }
+.layer--type { inset: 0; width: 100%; height: 100%; z-index: 1; }
+.layer--portrait { z-index: 2; left: 0; top: 0; opacity: 0; will-change: opacity; }
+
+/* The real <h1>. Visually hidden once WebGL takes over; styled as a fallback otherwise. */
+.hero__title {
+  position: absolute;
+  left: 0; top: 0;
+  margin: 0;
+  z-index: 1;
+  font-family: 'Anton', 'Impact', 'Haettenschweiler', 'Arial Narrow Bold', sans-serif;
+  font-weight: 400;
+  text-transform: uppercase;
+  line-height: 1;
+  white-space: nowrap;
+  color: var(--ink);
+  clip-path: inset(50%);
+  width: 1px; height: 1px; overflow: hidden;
+}
+.hero[data-gl='off'] .hero__title {
+  clip-path: none;
+  width: auto; height: auto; overflow: visible;
+}
+
+/* ───────────────────────── chrome ───────────────────────── */
+.nav, .caption, .cue {
+  position: absolute;
+  z-index: 5;
+  color: #fff;
+  mix-blend-mode: difference;   /* reads black on paper, flips to white if it ever crosses the portrait */
+  font-size: 13px;
+  line-height: 1.3;
+  letter-spacing: -0.005em;
+  opacity: 0;
+}
+
+.nav {
+  top: 0; left: 0; right: 0;
+  padding: var(--pad);
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+}
+.nav__brand { font-size: 15px; font-weight: 600; letter-spacing: -0.015em; }
+.nav__links { display: flex; gap: clamp(16px, 2.2vw, 34px); }
+.nav a { position: relative; padding: 4px 0; }
+.nav__links a::after {
+  content: '';
+  position: absolute; left: 0; right: 0; bottom: 1px; height: 1px;
+  background: currentColor;
+  transform: scaleX(0); transform-origin: right;
+  transition: transform 0.5s var(--ease-out);
+}
+.nav__links a:hover::after, .nav__links a:focus-visible::after { transform: scaleX(1); transform-origin: left; }
+.nav a:focus-visible { outline: 2px solid #fff; outline-offset: 4px; }
+
+.caption { left: var(--pad); bottom: var(--pad); margin: 0; font-weight: 450; }
+.cue { right: var(--pad); bottom: var(--pad); margin: 0; font-weight: 450; }
+
+.hero[data-state='ready'] .nav,
+.hero[data-state='ready'] .caption,
+.hero[data-state='ready'] .cue { opacity: 1; transition: opacity 1.1s ease 0.9s; }
+
+/* ───────────────────────── loader ───────────────────────── */
+.progress {
+  position: fixed; left: 0; top: 0; z-index: 50;
+  height: 2px; width: 100%;
+  background: var(--ink);
+  transform: scaleX(var(--p, 0));
+  transform-origin: left;
+  transition: transform 0.25s linear, opacity 0.6s ease 0.2s;
+}
+.progress[data-done='true'] { opacity: 0; }
+
+.after { height: 40vh; background: var(--paper); }
+
+@media (max-width: 640px) {
+  .nav__links a:nth-child(3) { display: none; }
+  .nav, .caption, .cue { font-size: 12px; }
+  /* the empty space above the head is the quiet place for the descriptor */
+  .caption { bottom: auto; top: calc(var(--pad) + 46px); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero[data-state='ready'] .nav,
+  .hero[data-state='ready'] .caption,
+  .hero[data-state='ready'] .cue { transition: none; }
+}
